@@ -51,7 +51,7 @@ function Scene({ id, children, className = '', dark = false }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 'clamp(40px, 6vw, 96px) clamp(24px, 5vw, 80px)',
+          padding: 'clamp(80px, 8vw, 120px) clamp(20px, 5vw, 80px) clamp(80px, 8vw, 120px)',
         }}
       >
         <div
@@ -120,7 +120,7 @@ function Masthead() {
           <span
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(420px, 78vw, 1100px)',
+              fontSize: 'clamp(280px, 78vw, 1100px)',
               fontWeight: 300,
               lineHeight: 0.8,
               color: 'transparent',
@@ -139,15 +139,15 @@ function Masthead() {
           transition={{ duration: 1, delay: 0.2 }}
           className="absolute top-0 left-0 right-0 z-10"
         >
-          <div className="mx-auto max-w-[1400px] px-8 md:px-14 pt-28 flex items-center justify-between">
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-10 md:px-14 pt-24 sm:pt-28 flex items-center justify-between">
             <span
-              className="text-[10px] tracking-[0.32em] uppercase text-[var(--color-muted)]"
+              className="text-[9px] sm:text-[10px] tracking-[0.32em] uppercase text-[var(--color-muted)]"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               Volume 01
             </span>
             <span
-              className="text-[10px] tracking-[0.32em] uppercase text-[var(--color-muted)]"
+              className="text-[9px] sm:text-[10px] tracking-[0.32em] uppercase text-[var(--color-muted)]"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               {todayLabel()}
@@ -158,13 +158,13 @@ function Masthead() {
         {/* Center stage */}
         <motion.div
           style={{ y: titleY, opacity: titleOpacity }}
-          className="relative z-10 h-full flex flex-col items-center justify-center px-8 text-center"
+          className="relative z-10 h-full flex flex-col items-center justify-center px-6 sm:px-8 text-center"
         >
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.4, delay: 0.4 }}
-            className="eyebrow mb-12"
+            className="eyebrow mb-8 sm:mb-12"
           >
             Artha Insights
           </motion.div>
@@ -173,7 +173,7 @@ function Masthead() {
             className="max-w-[18ch] tracking-tight"
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(48px, 8vw, 124px)',
+              fontSize: 'clamp(38px, 8vw, 124px)',
               fontWeight: 400,
               lineHeight: 0.96,
               letterSpacing: '-0.03em',
@@ -198,7 +198,7 @@ function Masthead() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 1.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-12 max-w-[42ch] text-[15px] md:text-[16px] leading-[1.7] text-[var(--color-ink-3)]"
+            className="mt-8 sm:mt-12 max-w-[42ch] text-[14px] sm:text-[16px] leading-[1.7] text-[var(--color-ink-3)] px-4"
           >
             A weekly Brief written from inside the machine.
           </motion.p>

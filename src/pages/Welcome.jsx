@@ -107,6 +107,8 @@ export default function Welcome() {
     return false
   }, [current, profile])
 
+  // Welcome saveProfile is async now (writes to Supabase) but we don't await
+  // because we don't want to block the visual flow.
   const advance = () => {
     if (!canAdvance) return
     if (isLast) {

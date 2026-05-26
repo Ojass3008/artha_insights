@@ -19,7 +19,6 @@ export default function PulseStrip({ compact = false }) {
     }
     load()
 
-    // refresh every 5 minutes while page is open
     const id = setInterval(load, 5 * 60 * 1000)
     return () => {
       cancelled = true
@@ -30,8 +29,13 @@ export default function PulseStrip({ compact = false }) {
   if (error) {
     return (
       <div
-        className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-muted)]"
-        style={{ fontFamily: 'var(--font-mono)' }}
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: 'var(--color-muted)',
+        }}
       >
         Pulse · offline
       </div>
@@ -41,8 +45,13 @@ export default function PulseStrip({ compact = false }) {
   if (!data) {
     return (
       <div
-        className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-muted-2)]"
-        style={{ fontFamily: 'var(--font-mono)' }}
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: 'var(--color-muted-2)',
+        }}
       >
         Loading pulse…
       </div>
@@ -54,11 +63,17 @@ export default function PulseStrip({ compact = false }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className={`grid ${
-        compact
-          ? 'grid-cols-2 md:grid-cols-5 gap-x-10 gap-y-8'
-          : 'grid-cols-2 md:grid-cols-5 gap-x-14 gap-y-12 border-t border-[var(--color-rule)] pt-12'
-      }`}
+      className="grid"
+      style={{
+        gridTemplateColumns: compact
+          ? 'repeat(auto-fit, minmax(140px, 1fr))'
+          : 'repeat(auto-fit, minmax(160px, 1fr))',
+        columnGap: 'clamp(20px, 4vw, 56px)',
+        rowGap: 'clamp(28px, 5vw, 48px)',
+        borderTop: compact ? 'none' : '1px solid var(--color-rule)',
+        paddingTop: compact ? 0 : 'clamp(28px, 5vw, 48px)',
+        textAlign: 'left',
+      }}
     >
       {data.map((item) => (
         <Quote key={item.symbol} item={item} />
@@ -74,20 +89,36 @@ function Quote({ item }) {
   return (
     <div>
       <div
-        className="text-[10px] tracking-[0.24em] uppercase text-[var(--color-muted)] mb-2"
-        style={{ fontFamily: 'var(--font-mono)' }}
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          letterSpacing: '0.24em',
+          textTransform: 'uppercase',
+          color: 'var(--color-muted)',
+          marginBottom: 8,
+        }}
       >
         {item.label}
       </div>
       <div
-        className="text-[24px] md:text-[28px] tracking-tight leading-none mb-1"
-        style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 500,
+          fontSize: 'clamp(22px, 3.4vw, 28px)',
+          letterSpacing: '-0.02em',
+          lineHeight: 1,
+          marginBottom: 4,
+        }}
       >
-        {formatNumber(item.price, { decimals: item.symbol === 'INR=X' ? 2 : 2 })}
+        {formatNumber(item.price, { decimals: 2 })}
       </div>
       <div
-        className="text-[11px] tracking-wide"
-        style={{ fontFamily: 'var(--font-mono)', color: accent }}
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          letterSpacing: '0.02em',
+          color: accent,
+        }}
       >
         {up ? '▲' : '▼'} {formatPct(item.changePct)}
       </div>

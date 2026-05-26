@@ -1,16 +1,56 @@
 import { useState } from 'react'
 import PageWrap from '../components/PageWrap'
+import { supabase } from '../lib/supabase'
+import { getProfile } from '../lib/profile'
 
 export default function Subscribe() {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle')
+  const [status, setStatus] = useState('idle') // idle | loading | success | error
+  const [errorMsg, setErrorMsg] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email || !email.includes('@')) return
-    const list = JSON.parse(localStorage.getItem('artha_signups') || '[]')
-    if (!list.includes(email)) list.push(email)
-    localStorage.setItem('artha_signups', JSON.stringify(list))
+    setStatus('loading')
+    setErrorMsg('')
+
+    // Always cache locally so we never lose a signup even if the DB call fails
+    try {
+      const list = JSON.parse(localStorage.getItem('artha_signups') || '[]')
+      if (!list.includes(email)) list.push(email)
+      localStorage.setItem('artha_signups', JSON.stringify(list))
+    } catch {
+      /* ignore */
+    }
+
+    // Best effort DB write
+    if (supabase) {
+      const profile = getProfile() || {}
+      const { error } = await supabase.from('signups').upsert(
+        {
+          email: email.trim().toLowerCase(),
+          source: 'subscribe',
+          level: profile.level || null,
+          interests: profile.interests || null,
+          depth: profile.depth || null,
+          name: profile.name || null,
+        },
+        { onConflict: 'email' }
+      )
+
+      if (error) {
+        // The unique-key collision is fine — show success to the user
+        if (error.code === '23505') {
+          setStatus('success')
+          setEmail('')
+          return
+        }
+        setErrorMsg(error.message)
+        setStatus('error')
+        return
+      }
+    }
+
     setStatus('success')
     setEmail('')
   }
@@ -23,11 +63,11 @@ export default function Subscribe() {
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 400,
-          fontSize: 'clamp(32px, 4.6vw, 48px)',
+          fontSize: 'clamp(28px, 6vw, 48px)',
           lineHeight: 1.1,
           letterSpacing: '-0.02em',
           maxWidth: '14ch',
-          margin: '0 auto 32px',
+          margin: '0 auto 28px',
         }}
       >
         One{' '}
@@ -41,15 +81,16 @@ export default function Subscribe() {
 
       <p
         style={{
-          fontSize: 16,
+          fontSize: 'clamp(14px, 4vw, 16px)',
           lineHeight: 1.65,
           color: 'var(--color-ink-3)',
-          maxWidth: '40ch',
-          margin: '0 auto 48px',
+          maxWidth: '38ch',
+          margin: '0 auto 40px',
+          padding: '0 16px',
         }}
       >
-        The week's writing — markets, startups, and capital from inside
-        the machine.
+        The week's writing — markets, startups, and capital from inside the
+        machine.
       </p>
 
       {status === 'success' ? (
@@ -57,7 +98,7 @@ export default function Subscribe() {
           style={{
             border: '1px solid var(--color-oxblood)',
             background: 'var(--color-oxblood-soft)',
-            padding: '32px',
+            padding: '24px 24px',
             maxWidth: 420,
             margin: '0 auto',
           }}
@@ -66,7 +107,7 @@ export default function Subscribe() {
             style={{
               fontFamily: 'var(--font-display)',
               fontStyle: 'italic',
-              fontSize: 16,
+              fontSize: 'clamp(15px, 4vw, 16px)',
               lineHeight: 1.5,
               color: 'var(--color-ink)',
             }}
@@ -83,6 +124,7 @@ export default function Subscribe() {
             gap: 12,
             maxWidth: 420,
             margin: '0 auto',
+            padding: '0 4px',
           }}
         >
           <input
@@ -91,13 +133,14 @@ export default function Subscribe() {
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={status === 'loading'}
             style={{
               flex: '1 1 220px',
               padding: '14px 16px',
               background: 'transparent',
               border: '1px solid var(--color-rule-2)',
               fontFamily: 'var(--font-sans)',
-              fontSize: 14,
+              fontSize: 16, // 16+ avoids iOS auto-zoom on focus
               outline: 'none',
               transition: 'border-color 0.2s',
             }}
@@ -110,6 +153,7 @@ export default function Subscribe() {
           />
           <button
             type="submit"
+            disabled={status === 'loading'}
             style={{
               padding: '14px 24px',
               background: 'var(--color-ink)',
@@ -119,7 +163,8 @@ export default function Subscribe() {
               letterSpacing: '0.22em',
               textTransform: 'uppercase',
               border: 'none',
-              cursor: 'pointer',
+              cursor: status === 'loading' ? 'wait' : 'pointer',
+              opacity: status === 'loading' ? 0.6 : 1,
               transition: 'background-color 0.25s',
             }}
             onMouseEnter={(e) =>
@@ -129,14 +174,26 @@ export default function Subscribe() {
               (e.currentTarget.style.background = 'var(--color-ink)')
             }
           >
-            Subscribe
+            {status === 'loading' ? '…' : 'Subscribe'}
           </button>
         </form>
       )}
 
+      {status === 'error' && errorMsg && (
+        <p
+          style={{
+            marginTop: 16,
+            fontSize: 12,
+            color: 'var(--color-oxblood)',
+          }}
+        >
+          {errorMsg}
+        </p>
+      )}
+
       <p
         style={{
-          marginTop: 40,
+          marginTop: 32,
           fontFamily: 'var(--font-mono)',
           fontSize: 10,
           letterSpacing: '0.32em',
