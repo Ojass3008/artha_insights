@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Artha Insights — design tokens
+   Brand: minimal, old-money editorial.
+   Palette: ivory paper, ink black, oxblood accent.
+   ============================================================ */
+
+@theme {
+  --color-paper: #F5F1E8;
+  --color-paper-2: #EDE7DA;
+  --color-paper-3: #E2DACB;
+
+  --color-ink: #0E0E0E;
+  --color-ink-2: #1F1D1B;
+  --color-ink-3: #3A3735;
+
+  --color-muted: #6E6962;
+  --color-muted-2: #9C9690;
+  --color-rule: rgba(14, 14, 14, 0.10);
+  --color-rule-2: rgba(14, 14, 14, 0.18);
+
+  --color-oxblood: #6E1F1F;
+  --color-oxblood-2: #8A2A2A;
+  --color-oxblood-soft: rgba(110, 31, 31, 0.08);
+
+  --header-h: 64px;
+
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-deva: 'Eczar', 'Fraunces', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+::selection {
+  background: var(--color-oxblood);
+  color: var(--color-paper);
+}
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variation-settings: 'opsz' 144;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-paper); }
+::-webkit-scrollbar-thumb { background: var(--color-rule-2); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-3); }
+
+/* ----- editorial helpers ----- */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-oxblood);
+}
+
+.rule {
+  height: 1px;
+  background: var(--color-rule);
+}
+
+.rule-strong {
+  height: 1px;
+  background: var(--color-rule-2);
+}
+
+.serif-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ----- prose for The Brief ----- */
+
+.prose-artha {
+  font-family: var(--font-sans);
+  color: var(--color-ink-2);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.prose-artha p { margin: 0 0 1.4em; }
+
+.prose-artha p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 4.2em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.08em 0.12em 0 0;
+  color: var(--color-ink);
+}
+
+.prose-artha h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+  margin: 2.2em 0 0.6em;
+  color: var(--color-ink);
+}
+
+.prose-artha h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  margin: 1.8em 0 0.4em;
+  color: var(--color-ink);
+}
+
+.prose-artha blockquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--color-ink);
+  border-left: 2px solid var(--color-oxblood);
+  padding: 0.2em 0 0.2em 1em;
+  margin: 1.6em 0;
+}
+
+.prose-artha a {
+  color: var(--color-oxblood);
+  border-bottom: 1px solid var(--color-oxblood-soft);
+  transition: border-color 0.15s ease;
+}
+
+.prose-artha a:hover { border-color: var(--color-oxblood); }
+
+.prose-artha em { font-style: italic; }
+.prose-artha strong { font-weight: 600; color: var(--color-ink); }
+
+.prose-artha hr {
+  border: none;
+  text-align: center;
+  margin: 2.4em 0;
+}
+.prose-artha hr::after {
+  content: '◆ ◆ ◆';
+  letter-spacing: 0.6em;
+  color: var(--color-oxblood);
+  font-size: 10px;
+}
+
+/* ----- subtle fade-in on mount ----- */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.6s ease both; }
+.fade-up-delay-1 { animation: fadeUp 0.6s 0.08s ease both; }
+.fade-up-delay-2 { animation: fadeUp 0.6s 0.16s ease both; }
+.fade-up-delay-3 { animation: fadeUp 0.6s 0.24s ease both; }
