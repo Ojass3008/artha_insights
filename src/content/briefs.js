@@ -1,33 +1,31 @@
 // Briefs are written here as plain JS objects for v1.
 // Each Brief has a slug (URL), title, dek, date, readTime, and body (array of blocks).
 // Blocks: { type: 'p' | 'h2' | 'h3' | 'quote' | 'hr', text }
-// We'll migrate to MDX once the rhythm is established.
 
 export const BRIEFS = [
   {
-    slug: 'when-the-rotation-meets-the-rupee',
+    slug: 'the-rotation-revisited',
     pillar: 'Brief',
-    title: 'When the rotation meets the rupee',
-    dek: 'Two weeks after the quiet rotation began, the rupee is the new variable in the room.',
+    title: 'The Rotation, Revisited',
+    dek: 'Two weeks on, the quiet trade has become the loud one. What the model says about the next leg.',
     date: '2026-06-01',
-    readTime: '8 min read',
+    readTime: '6 min read',
     body: [
-      { type: 'p', text: "Two weeks ago in this Brief, I wrote that foreign flows had quietly turned positive on Indian midcaps — that the rotation was in the data before it was in the press. Since then, the rotation hasn't reversed. But it has acquired company. The rupee, sitting near 95.7 to the dollar this morning, has now drifted weaker for ten straight sessions. NIFTY is down half a percent on the week. India VIX, oddly, just collapsed three and a half percent in a single session." },
-      { type: 'p', text: "On their own, none of these moves are large. Read together, they tell a more interesting story." },
-      { type: 'h2', text: "What's actually happening" },
-      { type: 'p', text: "The rotation I described two weeks ago was foreign institutional buying creeping back into liquidity-adjusted midcaps — names that had been unloved precisely because they were illiquid enough to hurt during DII redemptions. That trade is still working. The factor signal is still there. The capital is still patient." },
-      { type: 'p', text: "What's new is the rupee. A weakening rupee changes the maths for the foreign investor in ways most retail commentary skips over. Every percent the rupee loses against the dollar is a percent of return the FII has to claw back from the underlying stock just to break even in dollar terms. Ten sessions of drift adds up. At some point it stops being a quiet tailwind and becomes a soft headwind on the same trade that's working in INR." },
-      { type: 'p', text: "The fact that VIX dropped while equities also drifted down is the tell. Markets aren't pricing in a violent move. They're pricing in slow, deliberate selling — the kind a foreign desk does when they trim positions methodically rather than bail." },
-      { type: 'h2', text: "What the model sees, two weeks later" },
-      { type: 'p', text: "The same factor decomposition I ran two weeks ago — momentum, quality, liquidity-adjusted size — now shows liquidity-adjusted size losing some of its dominant edge. Not crashing. Just sharing the spotlight. Quality has crept up. That's a meaningfully different signal." },
-      { type: 'p', text: "When liquidity-adjusted size is the dominant factor, the trade is: buy the unloved illiquid name before everyone else figures it out. When quality starts gaining, the trade shifts: buy companies with clean balance sheets and visible cash generation, even if they're more crowded. The market is starting to ask harder questions of the names it was happy to accumulate quietly four weeks ago." },
-      { type: 'quote', text: 'A weak currency makes patient capital impatient. Slowly, then all at once.' },
-      { type: 'h2', text: "What it means for the rest of us" },
-      { type: 'p', text: "If you're a salaried investor with a SIP into a midcap fund, the same answer holds: do nothing. Your fund manager has already adjusted, or will, and you reading this Brief on a Sunday morning is not how alpha is captured." },
-      { type: 'p', text: "If you're an active investor, the watch-this-week list is short. Three names: the rupee, FII flow data, and quality factor names that have been compounding without much fanfare. If the rupee stabilises around 95-96, the rotation continues. If it cracks 97, the rotation breaks and we have a different conversation in this Brief next week." },
-      { type: 'p', text: "If you're a founder or operator raising right now, the takeaway is more uncomfortable. Foreign LPs writing dollar cheques are doing the same maths the FIIs are. Patient capital from abroad is becoming meaningfully more expensive in real terms even when the headline cheque size stays the same. Cleaner cap tables and tighter operating discipline aren't a nice-to-have anymore. They're the price of the meeting." },
+      { type: 'p', text: 'Two weeks ago in this letter, the thesis was simple. Foreign institutional investors had quietly turned net buyers of Indian equities. The factor model was flagging liquidity-adjusted size as the dominant signal in midcaps. The trade was real, but the story had not arrived. That was the edge.' },
+      { type: 'p', text: "The story has now arrived. The financial press caught up by mid last week. CNBC ran a panel. Twitter discovered it. The midcap names that were quietly being accumulated through April are now in everyone's screener. And, as the script demands, the index closed lower this week. NIFTY printed 23,913, down half a percent. Sensex followed. Volatility eased — VIX off another three percent — which is the tell that the move was less panic and more digestion." },
+      { type: 'h2', text: "What the model is showing now" },
+      { type: 'p', text: "The factor decomposition has shifted. Liquidity-adjusted size is no longer the dominant driver. It has been replaced by quality. In plain language: the easy beta in unloved small names has been bought, and the marginal buyer is now choosing companies with cleaner balance sheets and steadier cash flow. The market is becoming more selective inside the same upward bias." },
+      { type: 'p', text: "This is exactly what the previous letter warned about. The quiet trade was already half over by the time the headlines arrived. If you were buying the basket on the basis of last fortnight's signal, you have probably had your move. The next leg is narrower, slower, and rewards picking rather than baskets." },
+      { type: 'quote', text: "Every rotation goes through three phases — flow, narrative, exhaustion. We are now squarely in narrative. Exhaustion is what comes next, and it does not announce itself either." },
+      { type: 'h2', text: 'On the street' },
+      { type: 'p', text: "Two conversations this week sharpened the read. A mid-market PE associate over coffee in DLF Phase 2 mentioned that bid-ask spreads on small-ticket secondary blocks have widened noticeably — sellers are pricing for one more leg up, buyers are pricing for the rotation breaking. That gap is the most useful signal a model cannot capture. It is the sound of opinion diverging." },
+      { type: 'p', text: "And in a separate dinner with two early-stage founders, the topic that kept coming up was not capital availability — that is back — but capital quality. Investors who actually understand operations are setting the terms. The cheque size is smaller than 2021, the discipline is much higher, and the time horizon is longer. That is consistent with a market where the easy gains have been priced and the next gains require selection." },
+      { type: 'h2', text: 'What it means' },
+      { type: 'p', text: "If you are running a SIP, this letter does not change your behaviour. It never does. That is the discipline of the SIP and exactly why it works." },
+      { type: 'p', text: "If you are running an active book, the trade is to do less. Most of the obvious basket beta is gone. The temptation will be to chase the next wave of small-cap stories that are already trending on Twitter. Resist it. The model says the market is rewarding quality from here, not boldness." },
+      { type: 'p', text: "If you are a founder or operator watching this, the message is the same one as last fortnight, just louder. The capital coming back is the patient kind. Build for those investors. The headline rounds will return eventually — they always do — but the ones that matter for the next decade are the disciplined ones being written right now." },
       { type: 'hr' },
-      { type: 'p', text: "I'll keep tracking the same signal weekly. The rotation that started quietly is now negotiating with the currency. Whichever wins decides what midcaps look like by July." },
+      { type: 'p', text: "Next Sunday: an early read on what the BharatAlpha model expects out of Q1 FY27 earnings, and the three sectors where the factor signal is most divergent from consensus. Until then." },
     ],
   },
   {
