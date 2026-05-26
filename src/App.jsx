@@ -8,21 +8,19 @@ import Subscribe from './pages/Subscribe'
 import Today from './pages/Today'
 import NotFound from './pages/NotFound'
 import Welcome from './pages/Welcome'
-import { isOrientedThisSession } from './lib/profile'
+import { hasCompletedOrientation } from './lib/profile'
 
 /**
- * SessionGate
- * --------------
- * On every fresh browser session, the home redirects to /welcome.
- * Once the reader finishes orientation (or skips it), they go to home and
- * stay there for the rest of the session. Closing the tab resets, so the
- * orientation is part of every visit — but their answers persist.
- *
- * Subpages (/about, /brief/*, etc.) are never gated, so shared links work.
+ * FirstVisitGate
+ * ---------------
+ * On first visit on this device → /welcome.
+ * Once orientation is completed (saved in localStorage), the gate is
+ * permanently disabled for this device. Refreshing or revisiting any
+ * page never re-shows the orientation.
  */
-function SessionGate({ children }) {
+function FirstVisitGate({ children }) {
   const { pathname } = useLocation()
-  if (pathname === '/' && !isOrientedThisSession()) {
+  if (pathname === '/' && !hasCompletedOrientation()) {
     return <Navigate to="/welcome" replace />
   }
   return children
@@ -38,9 +36,9 @@ export default function App() {
         <Route
           path="/"
           element={
-            <SessionGate>
+            <FirstVisitGate>
               <Home />
-            </SessionGate>
+            </FirstVisitGate>
           }
         />
         <Route path="/about" element={<About />} />

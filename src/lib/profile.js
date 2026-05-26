@@ -1,10 +1,9 @@
-// Reader profile — saved to Supabase + localStorage.
-// Session flag controls whether orientation plays on this visit.
+// Reader profile — saved permanently in localStorage so we never gate
+// the same device twice. The actual answers go to Supabase too.
 
 import { supabase } from './supabase'
 
 const PROFILE_KEY = 'artha_profile_v1'
-const SESSION_KEY = 'artha_oriented_this_session'
 
 export function getProfile() {
   if (typeof window === 'undefined') return null
@@ -19,18 +18,16 @@ export function getProfile() {
 export async function saveProfile(profile) {
   const completed = { ...profile, completedAt: new Date().toISOString() }
 
-  // Always save locally so we have a fallback if the network fails
+  // Persist locally first — this is what determines whether orientation
+  // shows on the next visit. We never want a network failure to leave
+  // the user without a profile.
   try {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(completed))
-    sessionStorage.setItem(SESSION_KEY, '1')
   } catch {
     /* quota errors */
   }
 
-  // Best-effort write to Supabase. Only insert if there's something to track.
-  // We use the 'signups' table with a synthetic email key for orientation-only
-  // entries (those without an email). When the user later subscribes, we'll
-  // upsert by their real email.
+  // Best-effort write to Supabase for our own analytics later.
   if (!supabase) return
 
   try {
@@ -54,13 +51,14 @@ export async function saveProfile(profile) {
 export function clearProfile() {
   try {
     localStorage.removeItem(PROFILE_KEY)
-    sessionStorage.removeItem(SESSION_KEY)
   } catch {
     /* ignore */
   }
 }
 
-export function isOrientedThisSession() {
+// Has the reader completed orientation on this device?
+// Once true, it stays true forever (until they clear localStorage).
+export function hasCompletedOrientation() {
   if (typeof window === 'undefined') return true
-  return !!sessionStorage.getItem(SESSION_KEY)
+  return !!getProfile()
 }
