@@ -44,13 +44,20 @@ export default async function handler(req, res) {
   const expectedSecret = process.env.CRON_SECRET
   const isVercelCron = req.headers['user-agent']?.includes('vercel-cron')
 
+  const cleanExpected = (expectedSecret || '').trim()
+  const cleanQuery = (querySecret || '').trim()
+  const cleanHeader = (authHeader || '').replace(/^Bearer\s+/, '').trim()
+
   const authorized =
     isVercelCron ||
-    (expectedSecret && authHeader === `Bearer ${expectedSecret}`) ||
-    (expectedSecret && querySecret === expectedSecret)
+    (cleanExpected && cleanHeader === cleanExpected) ||
+    (cleanExpected && cleanQuery === cleanExpected)
 
   if (!authorized) {
-    return res.status(401).json({ error: 'Unauthorized' })
+    return res.status(401).json({
+      error: 'Unauthorized',
+      hint: cleanExpected ? 'secret mismatch' : 'CRON_SECRET env var not set',
+    })
   }
 
   const SUPABASE_URL = process.env.VITE_SUPABASE_URL
