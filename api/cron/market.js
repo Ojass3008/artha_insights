@@ -54,16 +54,14 @@ export default async function handler(req, res) {
       auth: { persistSession: false },
     })
 
-    const url = `${YAHOO_BASE}${SYMBOLS.map((s) => s.symbol).join(',')}`
+    const symbolStr = SYMBOLS.map((s) => s.symbol).join(',')
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+      YAHOO_BASE + symbolStr
+    )}`
+
     let yahooRes
     try {
-      yahooRes = await fetch(url, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          Accept: 'application/json',
-        },
-      })
+      yahooRes = await fetch(proxyUrl)
     } catch (e) {
       return res.status(502).json({
         error: 'Yahoo fetch threw',
