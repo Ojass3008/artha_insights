@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import PulseStrip from '../components/PulseStrip'
 import PageWrap from '../components/PageWrap'
+import HeadlinesGrid from '../components/HeadlinesGrid'
 import {
   fetchMarketSnapshot,
   formatNumber,
@@ -42,11 +43,12 @@ export default function Today() {
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 400,
-          fontSize: 'clamp(36px, 6vw, 68px)',
-          lineHeight: 1.05,
+          fontSize: 'clamp(30px, 6vw, 68px)',
+          lineHeight: 1.06,
           letterSpacing: '-0.02em',
           maxWidth: '16ch',
           margin: '0 auto 32px',
+          padding: '0 8px',
         }}
       >
         The daily{' '}
@@ -106,6 +108,11 @@ export default function Today() {
           <Spacer />
         </>
       )}
+
+      {/* HEADLINES */}
+      <SectionLabel>Headlines</SectionLabel>
+      <HeadlinesGrid limitPerPillar={4} />
+      <Spacer />
 
       {/* THE READ */}
       <SectionLabel>The reading</SectionLabel>

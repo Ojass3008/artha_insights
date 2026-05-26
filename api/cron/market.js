@@ -22,11 +22,20 @@ const YAHOO_BASE =
   'https://query1.finance.yahoo.com/v7/finance/quote?symbols='
 
 export default async function handler(req, res) {
-  // Vercel cron sends a special header; reject unauthorized callers in prod.
-  if (
-    process.env.NODE_ENV === 'production' &&
-    req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`
-  ) {
+  // Accept either:
+  //  - Vercel's cron trigger (sends a special user-agent + auth header),
+  //  - Or a manual call with `?secret=<CRON_SECRET>` (for testing)
+  const authHeader = req.headers.authorization
+  const querySecret = req.query.secret
+  const expectedSecret = process.env.CRON_SECRET
+  const isVercelCron = req.headers['user-agent']?.includes('vercel-cron')
+
+  const authorized =
+    isVercelCron ||
+    (expectedSecret && authHeader === `Bearer ${expectedSecret}`) ||
+    (expectedSecret && querySecret === expectedSecret)
+
+  if (!authorized) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 

@@ -16,11 +16,12 @@ export default function Archive() {
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 400,
-          fontSize: 'clamp(34px, 5vw, 56px)',
+          fontSize: 'clamp(30px, 5vw, 56px)',
           lineHeight: 1.08,
           letterSpacing: '-0.02em',
           maxWidth: '18ch',
           margin: '0 auto 56px',
+          padding: '0 8px',
         }}
       >
         Everything published,{' '}

@@ -80,11 +80,12 @@ export default function BriefPage() {
           style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 400,
-            fontSize: 'clamp(34px, 5vw, 60px)',
-            lineHeight: 1.06,
+            fontSize: 'clamp(28px, 5vw, 60px)',
+            lineHeight: 1.08,
             letterSpacing: '-0.02em',
             maxWidth: '18ch',
             margin: '0 auto 32px',
+            padding: '0 8px',
           }}
         >
           {brief.title}

@@ -9,11 +9,12 @@ export default function About() {
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 400,
-          fontSize: 'clamp(32px, 4.6vw, 48px)',
-          lineHeight: 1.12,
+          fontSize: 'clamp(28px, 5vw, 48px)',
+          lineHeight: 1.14,
           letterSpacing: '-0.02em',
           maxWidth: '18ch',
           margin: '0 auto 56px',
+          padding: '0 8px',
         }}
       >
         An <span className="serif-italic">eighteen-year-old</span> in
