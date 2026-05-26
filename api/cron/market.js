@@ -55,18 +55,33 @@ export default async function handler(req, res) {
     })
 
     const symbolStr = SYMBOLS.map((s) => s.symbol).join(',')
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-      YAHOO_BASE + symbolStr
-    )}`
+    // Use corsproxy.io — faster and more reliable than allorigins for server use
+    const targetUrl = `${YAHOO_BASE}${symbolStr}`
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
 
     let yahooRes
     try {
-      yahooRes = await fetch(proxyUrl)
-    } catch (e) {
-      return res.status(502).json({
-        error: 'Yahoo fetch threw',
-        detail: String(e),
+      yahooRes = await fetch(proxyUrl, {
+        headers: { 'User-Agent': 'Artha-Insights/1.0' },
+        signal: AbortSignal.timeout(8000),
       })
+    } catch (e) {
+      // If proxy fails, try direct as last resort
+      try {
+        yahooRes = await fetch(targetUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; Artha/1.0)',
+            Accept: 'application/json',
+          },
+          signal: AbortSignal.timeout(8000),
+        })
+      } catch (e2) {
+        return res.status(502).json({
+          error: 'All fetch attempts failed',
+          proxy: String(e),
+          direct: String(e2),
+        })
+      }
     }
 
     if (!yahooRes.ok) {
