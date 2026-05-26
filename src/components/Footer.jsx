@@ -28,7 +28,7 @@ export default function Footer() {
             </li>
             <li>
               <Link to="/archive" className="hover:text-[var(--color-oxblood)] transition-colors">
-                Archive
+                The Brief
               </Link>
             </li>
             <li>

@@ -576,7 +576,7 @@ function personalizedSubtitle(profile) {
     case 'active':
       return 'For active investors. The signal you read before the headline catches up.'
     case 'pro':
-      return 'For finance pros. Where street and model meet, on Sundays.'
+      return 'For finance pros. Where the model and the headlines meet, on Sundays.'
     case 'founder':
       return 'For founders and operators. Capital and markets, the way they actually move.'
     default:

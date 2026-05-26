@@ -18,22 +18,20 @@ export default function About() {
         }}
       >
         An <span className="serif-italic">eighteen-year-old</span> in
-        Gurugram, building a quant model and reporting on Indian markets
-        from the street.
+        Gurugram, building a small toolset for reading Indian markets.
       </h1>
 
-      {/* Body — left-aligned within the centered column */}
       <div className="prose-artha" style={{ textAlign: 'left' }}>
         <p>
           Artha Insights is written and built by{' '}
-          <strong>Ojas Singh</strong> — based in Gurugram, on a gap
-          year, splitting his time between code and the camera. The
-          code half is <strong>BharatAlpha</strong>, a Python factor
-          model that screens Indian equities by quality, momentum, and
-          liquidity-adjusted size. The other half walks the street:
-          filming founders, sitting in on the rooms where capital
-          actually moves, and asking better questions than the
-          headlines do.
+          <strong>Ojas Singh</strong>, on a gap year in Gurugram. The
+          work splits into two halves. One half writes code: a small
+          factor model that screens Indian equities by quality,
+          momentum, and liquidity-adjusted size. The other half writes
+          the Brief — a weekly read that takes what the model is
+          surfacing, what the news is reporting, and what the broader
+          system is doing, and turns it into one essay worth twenty
+          quiet minutes.
         </p>
 
         <p>Both halves feed one Sunday Brief.</p>
@@ -52,9 +50,9 @@ export default function About() {
         <h2>The promise</h2>
 
         <p>
-          One Brief a week. Field notes when there is something real
-          to report. Model snapshots when the data shifts. No tips,
-          no targets, no certainty theatre.
+          One Brief a week. A daily Read for context between issues.
+          Model snapshots when the data shifts. No tips, no targets,
+          no certainty theatre.
         </p>
 
         <hr />
