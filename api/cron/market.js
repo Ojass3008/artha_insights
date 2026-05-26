@@ -1,18 +1,18 @@
-// Vercel cron — fetches market quotes and writes them to Supabase.
-// Strategy: try multiple free sources in order until one works.
-//   1. Stooq (free, reliable, no auth)
-//   2. Yahoo via corsproxy.io
-//   3. Yahoo direct (may fail with 429)
+// Vercel cron — fetches market quotes via Yahoo's v8 chart endpoint
+// (which works server-side, unlike v7/quote which throttles aggressively)
+// and writes them to Supabase.
 
 import { createClient } from '@supabase/supabase-js'
 
 const SYMBOLS = [
-  { symbol: '^NSEI', label: 'NIFTY 50', stooq: '^nsei' },
-  { symbol: '^BSESN', label: 'Sensex', stooq: '^bse' },
-  { symbol: '^NSEBANK', label: 'Bank NIFTY', stooq: '^nsebank' },
-  { symbol: 'INR=X', label: 'USD / INR', stooq: 'usdinr' },
-  { symbol: '^INDIAVIX', label: 'India VIX', stooq: '^indiavix' },
+  { symbol: '^NSEI', label: 'NIFTY 50' },
+  { symbol: '^BSESN', label: 'Sensex' },
+  { symbol: '^NSEBANK', label: 'Bank NIFTY' },
+  { symbol: 'INR=X', label: 'USD / INR' },
+  { symbol: '^INDIAVIX', label: 'India VIX' },
 ]
+
+const CHART_BASE = 'https://query1.finance.yahoo.com/v8/finance/chart/'
 
 export default async function handler(req, res) {
   try {
@@ -46,39 +46,40 @@ export default async function handler(req, res) {
       auth: { persistSession: false },
     })
 
-    // ---- Fetch ----
+    // ---- Fetch each symbol in parallel ----
+    const results = await Promise.allSettled(
+      SYMBOLS.map((s) => fetchYahooChart(s.symbol).then((q) => ({ s, q })))
+    )
+
     const rows = []
     const errors = []
 
-    for (const s of SYMBOLS) {
-      try {
-        const quote = await fetchStooq(s.stooq)
-        if (quote) {
-          rows.push({
-            symbol: s.symbol,
-            label: s.label,
-            price: quote.price,
-            change: quote.change,
-            change_pct: quote.changePct,
-            currency: s.symbol === 'INR=X' ? 'INR' : 'INR',
-            source: 'stooq',
-          })
-        } else {
-          errors.push({ symbol: s.symbol, reason: 'no data' })
-        }
-      } catch (e) {
-        errors.push({ symbol: s.symbol, error: String(e) })
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value.q) {
+        const { s, q } = r.value
+        rows.push({
+          symbol: s.symbol,
+          label: s.label,
+          price: q.price,
+          change: q.change,
+          change_pct: q.changePct,
+          currency: q.currency,
+          source: 'yahoo-v8',
+        })
+      } else if (r.status === 'fulfilled') {
+        errors.push({ symbol: r.value.s.symbol, reason: 'no data' })
+      } else {
+        errors.push({ reason: String(r.reason) })
       }
     }
 
     if (rows.length === 0) {
       return res.status(502).json({
-        error: 'No quotes returned from any source',
+        error: 'No quotes returned',
         errors,
       })
     }
 
-    // ---- Write ----
     const { error } = await supabase.from('market_quotes').insert(rows)
 
     if (error) {
@@ -97,40 +98,33 @@ export default async function handler(req, res) {
   }
 }
 
-// ---- Stooq fetcher ----
-//
-// Stooq is a free Polish data provider with global coverage and no auth.
-// Format: https://stooq.com/q/l/?s=^nsei&f=sd2t2ohlcv&h&e=csv
-// Returns CSV like: Symbol,Date,Time,Open,High,Low,Close,Volume
-async function fetchStooq(stooqSymbol) {
-  const url = `https://stooq.com/q/l/?s=${encodeURIComponent(stooqSymbol)}&f=sd2t2ohlcv&h&e=csv`
+// Yahoo's v8 chart endpoint: returns OHLC + meta with regularMarketPrice
+async function fetchYahooChart(symbol) {
+  const url = `${CHART_BASE}${encodeURIComponent(symbol)}?interval=1d&range=2d`
   const r = await fetch(url, {
-    headers: { 'User-Agent': 'Artha-Insights/1.0' },
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+      Accept: 'application/json',
+    },
     signal: AbortSignal.timeout(8000),
   })
   if (!r.ok) return null
-  const text = await r.text()
-  const lines = text.trim().split('\n')
-  if (lines.length < 2) return null
+  const json = await r.json()
+  const meta = json?.chart?.result?.[0]?.meta
+  if (!meta) return null
 
-  const header = lines[0].toLowerCase().split(',')
-  const data = lines[1].split(',')
-  const get = (key) => {
-    const i = header.indexOf(key)
-    return i >= 0 ? data[i] : null
-  }
+  const price = meta.regularMarketPrice
+  const previous = meta.chartPreviousClose ?? meta.previousClose
+  if (typeof price !== 'number') return null
 
-  const close = parseFloat(get('close'))
-  const open = parseFloat(get('open'))
-
-  if (isNaN(close)) return null
-
-  const change = isNaN(open) ? 0 : close - open
-  const changePct = isNaN(open) || open === 0 ? 0 : ((close - open) / open) * 100
+  const change = previous != null ? price - previous : 0
+  const changePct = previous ? (change / previous) * 100 : 0
 
   return {
-    price: close,
+    price,
     change,
     changePct,
+    currency: meta.currency || null,
   }
 }
