@@ -4,10 +4,13 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { BRIEFS } from '../content/briefs'
 import PulseStrip from '../components/PulseStrip'
 import SceneIndex from '../components/SceneIndex'
+import HomeHeadlines from '../components/HomeHeadlines'
+import { getProfile } from '../lib/profile'
 
 const SCENES = [
   { id: 'masthead', label: 'Masthead' },
   { id: 'pulse', label: 'The Pulse' },
+  { id: 'narrative', label: 'Narrative' },
   { id: 'brief', label: 'The Brief' },
   { id: 'invitation', label: 'Invitation' },
 ]
@@ -22,6 +25,7 @@ export default function Home() {
 
       <Masthead />
       <PulseScene />
+      <NarrativeScene />
       <BriefScene latest={latest} />
       <InvitationScene />
     </div>
@@ -93,6 +97,9 @@ function ProgressBar() {
 
 function Masthead() {
   const ref = useRef(null)
+  const profile = getProfile()
+  const returningName = profile?.name?.trim()
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
@@ -166,7 +173,7 @@ function Masthead() {
             transition={{ duration: 1.4, delay: 0.4 }}
             className="eyebrow mb-8 sm:mb-12"
           >
-            Artha Insights
+            {returningName ? `Welcome back, ${returningName}` : 'Artha Insights'}
           </motion.div>
 
           <h1
@@ -200,7 +207,7 @@ function Masthead() {
             transition={{ duration: 1.2, delay: 1.7, ease: [0.22, 1, 0.36, 1] }}
             className="mt-8 sm:mt-12 max-w-[42ch] text-[14px] sm:text-[16px] leading-[1.7] text-[var(--color-ink-3)] px-4"
           >
-            A weekly Brief written from inside the machine.
+            {personalizedSubtitle(profile)}
           </motion.p>
         </motion.div>
 
@@ -314,12 +321,24 @@ function PulseScene() {
 }
 
 /* ============================================================
-   3 — BRIEF SCENE — full viewport, single dominant headline
+   3 — NARRATIVE — quiet headlines row between Pulse and Brief
+   ============================================================ */
+
+function NarrativeScene() {
+  return (
+    <Scene id="narrative" dark>
+      <HomeHeadlines />
+    </Scene>
+  )
+}
+
+/* ============================================================
+   4 — LATEST BRIEF
    ============================================================ */
 
 function BriefScene({ latest }) {
   return (
-    <Scene id="brief" dark>
+    <Scene id="brief">
       <RevealStack>
         <div className="eyebrow mb-4">This Sunday</div>
 
@@ -545,6 +564,24 @@ function todayLabel() {
     month: 'long',
     year: 'numeric',
   })
+}
+
+function personalizedSubtitle(profile) {
+  if (!profile) {
+    return 'A weekly Brief written from inside the machine.'
+  }
+  switch (profile.level) {
+    case 'curious':
+      return 'For the curious. One Brief a week, no jargon for jargon\'s sake.'
+    case 'active':
+      return 'For active investors. The signal you read before the headline catches up.'
+    case 'pro':
+      return 'For finance pros. Where street and model meet, on Sundays.'
+    case 'founder':
+      return 'For founders and operators. Capital and markets, the way they actually move.'
+    default:
+      return 'A weekly Brief written from inside the machine.'
+  }
 }
 
 function formatDate(d) {
