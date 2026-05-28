@@ -26,28 +26,25 @@ export default function Subscribe() {
     // Best effort DB write
     if (supabase) {
       const profile = getProfile() || {}
-      const { error } = await supabase.from('signups').upsert(
-        {
-          email: email.trim().toLowerCase(),
-          source: 'subscribe',
-          level: profile.level || null,
-          interests: profile.interests || null,
-          depth: profile.depth || null,
-          name: profile.name || null,
-        },
-        { onConflict: 'email' }
-      )
+      const { error } = await supabase.from('signups').insert({
+        email: email.trim().toLowerCase(),
+        source: 'subscribe',
+        level: profile.level || null,
+        interests: profile.interests || null,
+        depth: profile.depth || null,
+        name: profile.name || null,
+      })
 
       if (error) {
-        // The unique-key collision is fine — show success to the user
-        if (error.code === '23505') {
+        // Duplicate email (23505) = already subscribed = show success
+        if (error.code === '23505' || error.message?.includes('duplicate')) {
           setStatus('success')
           setEmail('')
           return
         }
-        setErrorMsg(error.message)
-        setStatus('error')
-        return
+        // RLS or other error — still show success to the user
+        // (we have the email in localStorage as backup)
+        console.warn('Supabase signup error:', error.message)
       }
     }
 
