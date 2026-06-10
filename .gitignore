@@ -31,3 +31,19 @@ dist-ssr
 
 # Vercel
 .vercel
+
+# Python (quant compute service)
+quant/.venv
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+quant/.env
+
+quant/.env
+
+# Kiro IDE
+.kiro/
+
+# Kiro IDE
+.kiro/

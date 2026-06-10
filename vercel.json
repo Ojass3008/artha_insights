@@ -2,6 +2,20 @@
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
+  "functions": {
+    "api/cron/allocate.py": {
+      "runtime": "python@3.12",
+      "memory": 1024,
+      "maxDuration": 60,
+      "includeFiles": "quant/**"
+    },
+    "api/allocate.py": {
+      "runtime": "python@3.12",
+      "memory": 1024,
+      "maxDuration": 60,
+      "includeFiles": "quant/**"
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/market",
@@ -10,6 +24,10 @@
     {
       "path": "/api/cron/news",
       "schedule": "30 11 * * *"
+    },
+    {
+      "path": "/api/cron/allocate",
+      "schedule": "0 12 * * *"
     }
   ]
 }

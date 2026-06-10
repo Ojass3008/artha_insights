@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV = [
   { to: '/today', label: 'Today' },
+  { to: '/allocator', label: 'Allocator' },
   { to: '/archive', label: 'Archive' },
   { to: '/about', label: 'About' },
   { to: '/subscribe', label: 'Subscribe' },
@@ -24,6 +25,7 @@ export default function Header() {
 
   // Close menu on route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpen(false)
   }, [pathname])
 

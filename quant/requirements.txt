@@ -1,0 +1,9 @@
+# Core compute. Kept deliberately small — the meta-layer math is plain numpy.
+numpy>=1.26
+pandas>=2.1
+
+# Persistence (optional at runtime; code degrades gracefully without it).
+supabase>=2.6
+
+# Dev / test
+pytest>=8.0

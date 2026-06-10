@@ -35,3 +35,20 @@ Vercel deploy will use the same names — set them in
 
 The `SUPABASE_SERVICE_ROLE_KEY` only ever lives in Vercel's
 environment, never in code or git.
+
+## 5. Meta-allocator tables (v2)
+
+After `schema.sql`, run `meta_schema.sql` the same way (SQL Editor → paste →
+Run). It adds three public-read tables that power the capital-allocation
+dashboard, written to by the Python compute service in `quant/`:
+
+- `strategy_returns` — the point-in-time return ledger the meta-layer learns
+  from (one row per strategy per day, tagged with the regime active that day).
+- `meta_weights` — the strategy weights produced each run (`weight_learned` =
+  what the meta-layer wants, `weight_final` = what we actually trade after the
+  confidence blend toward the risk-parity anchor).
+- `confidence_log` — system confidence and its drivers per run.
+
+These have **public read** RLS policies (the dashboard reads them with the anon
+key). Writes happen only from `quant/` using the `service_role` key, exactly
+like the existing cron jobs.

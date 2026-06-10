@@ -6,6 +6,7 @@ import Archive from './pages/Archive'
 import BriefPage from './pages/BriefPage'
 import Subscribe from './pages/Subscribe'
 import Today from './pages/Today'
+import Allocator from './pages/Allocator'
 import NotFound from './pages/NotFound'
 import Welcome from './pages/Welcome'
 import { hasCompletedOrientation } from './lib/profile'
@@ -43,6 +44,7 @@ export default function App() {
         />
         <Route path="/about" element={<About />} />
         <Route path="/today" element={<Today />} />
+        <Route path="/allocator" element={<Allocator />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/brief/:slug" element={<BriefPage />} />
         <Route path="/subscribe" element={<Subscribe />} />

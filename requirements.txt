@@ -1,0 +1,6 @@
+# Python dependencies for the Vercel cron function api/cron/allocate.py.
+# Vercel's Python builder installs these for the serverless function.
+# (The frontend is Node/Vite and ignores this file.)
+numpy>=1.26,<3
+pandas>=2.1,<3
+supabase>=2.6,<3
